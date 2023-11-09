@@ -4,9 +4,54 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <link rel="stylesheet" href="./static/styles.css">
   <script src="./static/app.js" defer></script>
 </head>
 <body>
-  
+  <div class="container">
+    
+    <div class="display-container">
+      <label class="display">0</label>
+    </div>
+
+    <div class="buttons-container">
+    
+      <div class="buttons-row">
+        <button id="ac" class="darker-grey">ac</button>
+        <button id="del" class="darker-grey">del</button>
+        <button id="*" class="darker-grey">x</button>
+        <button id="/" class="darker-grey">/</button>
+      </div>
+    
+      <div class="buttons-row">
+        <button id="7">7</button>
+        <button id="8">8</button>
+        <button id="9">9</button>
+        <button id="+" class="darker-grey">+</button>
+      </div>
+    
+      <div class="buttons-row">
+        <button id="4">4</button>
+        <button id="5">5</button>
+        <button id="6">6</button>
+        <button id="-" class="darker-grey">-</button>        
+      </div>
+    
+      <div class="buttons-row">
+        <div class="buttons-container">
+          <div class="buttons-row">
+            <button id="1">1</button>
+            <button id="2">2</button>
+            <button id="3">3</button> 
+          </div>
+          <div class="buttons-row">
+            <button id="0" class="wide">0</button>
+            <button id="," class="darker-grey">,</button>
+          </div>          
+        </div>
+        <button id="=" class="yellow-background">=</button>          
+      </div>
+    </div>
+  </div>  
 </body>
 </html>
