@@ -88,7 +88,7 @@ buttons.forEach((button) => {
               result = performOperation(x, y, divide);
               break;
           }          
-          
+
           console.log(operands[0] + ' ' + operator + ' ' + operands[1] + ' = ' + result);
 
           operands[0] = result;
@@ -101,7 +101,52 @@ buttons.forEach((button) => {
 
       } else if (e.target.id === '=') {
         
+        resultPressed = true;
         
+        if (typingDigits) {
+          if (operands.length === 2) {
+            // operands[0] = operands[1];
+            operands.pop();
+          }
+          operands.push(+display.textContent);
+        }
+
+        if (operator !== '') {          
+          let x, y;
+          if (operands.length === 2) {            
+            x = operands[0];
+            y = operands[1];
+          } else {
+            x = operands[0];
+            y = x;
+            operands.push(y);
+          }
+
+          let result;
+          switch (operator) {
+            case ('+'): 
+              result = performOperation(x, y, add);
+              break;
+            
+            case ('-'): 
+              result = performOperation(x, y, subtract);
+              break;
+            
+            case ('*'): 
+              result = performOperation(x, y, multiply);
+              break;
+
+            case ('/'): 
+              result = performOperation(x, y, divide);
+              break;
+          } 
+
+          console.log(operands[0] + ' ' + operator + ' ' + operands[1] + ' = ' + result);
+
+          operands[0] = result;
+          display.textContent = result;  
+        }
+        typingDigits = false;
       }      
     }        
   });
