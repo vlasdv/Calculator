@@ -1,77 +1,119 @@
 let operands = [];
-let currentNumber = '';
 let operator = '';
 let commaPressed = false;
+let typingDigits = false;
+let resultPressed = false;
 
 const buttons = document.querySelectorAll('button');
 let display = document.querySelector('.display');
 
 buttons.forEach((button) => {
   button.addEventListener('click', e => {
-    // console.log(e);
-    let pressedButton = e.target.textContent;
-    if (e.target.id === 'del') {
-      console.log('delete');
-    } else if (e.target.id === 'ac') {
-      console.log('clear');
+
+    if (e.target.id ==='ac') {
       reset();
-    } else if (e.target.classList.contains('numbers')) {
-      console.log('number');
-      if (display.textContent === '0') {
-        display.textContent = '';
-      }
-      display.textContent = display.textContent + pressedButton;
-      currentNumber = currentNumber + pressedButton;
-    } else if (e.target.id === ',') {
+    } else if (e.target.id === '.') {
       if (!commaPressed) {
-        display.textContent = display.textContent + pressedButton;
-        currentNumber = currentNumber + '.';
+        if (typingDigits) {
+          display.textContent = display.textContent + '.';
+        } else {
+          display.textContent = '0.';
+          typingDigits = true;          
+        }       
       }
       commaPressed = true;
-    } else {
-      resetComma();
-      operands.push(+currentNumber);
-      currentNumber = '';
-      console.log(operands);
-      if (e.target.classList.contains('operations')) {
-        console.log('operation');
-        let pressedOperator = e.target.id;      
-        if (operator !== '') {
-          console.log(operator);
-          let x = operands[0];
-          let y = operands.length > 1 ? operands[1] : operands[0];
-          operands = [];
-          switch (operator) {
-            case 'add':
-              operands[0] = performOperation(x, y, add);
-              break;
-            case 'subtract':
-              operands[0] = performOperation(x, y, subtract);
-              break;
-            case 'multiply':
-              operands[0] = performOperation(x, y, multiply);
-              break;
-            case 'divide':
-              operands[0] = performOperation(x, y, divide);
-              break;
-          }
-          display.textContent = operands[0];          
+    } else if (e.target.id === 'del') {
+      if (typingDigits) {
+        display.textContent = display.textContent.slice(0, -1);
+        if (display.textContent === '') {
+          display.textContent = 0;
+          typingDigits = false;
+          resetComma();
         }
-        display.textContent = display.textContent + ' ' + pressedButton + ' ';
-        operator = pressedOperator;
+      } else {
+        display.textContent = '0';        
+      }
+    } else if (e.target.classList.contains('numbers')) {      
+      if (typingDigits) {
+        display.textContent = display.textContent + e.target.id;        
+      } else {
+        display.textContent = e.target.id;
+      }
+      typingDigits = true;
+    } else { 
+            
+      resetComma();   
+      
+      if (e.target.classList.contains('operations')) {
+        
+        if (resultPressed) {
+          operator = '';
+          resultPressed = 'false';
+        }
+
+        if (typingDigits) {
+          if (operands.length === 2) {
+            // operands[0] = operands[1];
+            operands.pop();
+          }
+          operands.push(+display.textContent);
+        }
+
+        if (operator !== '') {          
+          let x, y;
+          if (operands.length === 2) {            
+            x = operands[0];
+            y = operands[1];
+          } else {
+            x = operands[0];
+            y = x;
+            operands.push(y);
+          }
+
+          let result;
+          switch (operator) {
+            case ('+'): 
+              result = performOperation(x, y, add);
+              break;
+            
+            case ('-'): 
+              result = performOperation(x, y, subtract);
+              break;
+            
+            case ('*'): 
+              result = performOperation(x, y, multiply);
+              break;
+
+            case ('/'): 
+              result = performOperation(x, y, divide);
+              break;
+          }          
+          
+          console.log(operands[0] + ' ' + operator + ' ' + operands[1] + ' = ' + result);
+
+          operands[0] = result;
+          display.textContent = result;          
+        }           
+
+        typingDigits = false;
+
+        operator = e.target.id;
+
       } else if (e.target.id === '=') {
-        console.log('=');           
-      }  
-    }
+        
+        
+      }      
+    }        
   });
 });
 
 function reset() {
   resetComma();
-  operands = [];
-  currentNumber = '';
+  operands = [];  
   operator = '';
   display.textContent = '0';
+  typingDigits = false;
+  resultPressed = false;
 }
 
 function resetComma() {
@@ -79,6 +121,7 @@ function resetComma() {
 }
 
 function performOperation(x, y, operation) {
+  typingDigits = false;
   return operation(x, y);
 }
 
