@@ -8,6 +8,7 @@ const buttons = document.querySelectorAll('button');
 let display = document.querySelector('.display');
 
 buttons.forEach((button) => {
+
   button.addEventListener('click', e => {
 
     if (e.target.id ==='ac') {
@@ -92,17 +93,17 @@ buttons.forEach((button) => {
           console.log(operands[0] + ' ' + operator + ' ' + operands[1] + ' = ' + result);
 
           operands[0] = result;
-          display.textContent = result;          
+          // display.textContent = result;          
+          displayResult(result);
         }           
 
         typingDigits = false;
-
         operator = e.target.id;
-
+        
       } else if (e.target.id === '=') {
         
         resultPressed = true;
-        
+
         if (typingDigits) {
           if (operands.length === 2) {
             // operands[0] = operands[1];
@@ -144,13 +145,18 @@ buttons.forEach((button) => {
           console.log(operands[0] + ' ' + operator + ' ' + operands[1] + ' = ' + result);
 
           operands[0] = result;
-          display.textContent = result;  
+          displayResult(result);
+          // display.textContent = result;  
         }
         typingDigits = false;
       }      
     }        
   });
 });
+
+function displayResult(result) {
+  display.textContent = result.toString().slice(0, 17);
+}
 
 function reset() {
   resetComma();
