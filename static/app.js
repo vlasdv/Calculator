@@ -1,5 +1,6 @@
 let operands = [];
 let operator = '';
+
 let commaPressed = false;
 let typingDigits = false;
 let resultPressed = false;
@@ -13,27 +14,25 @@ buttons.forEach((button) => {
 
     if (e.target.id ==='ac') {
       reset();
+
     } else if (e.target.id === '.') {
       if (!commaPressed) {
         if (typingDigits) {
           display.textContent = display.textContent + '.';
         } else {
-          display.textContent = '0.';
+          reset();
+          display.textContent = '0.';          
           typingDigits = true;          
         }       
       }
       commaPressed = true;
-    } else if (e.target.id === 'del') {
-      if (typingDigits) {
-        display.textContent = display.textContent.slice(0, -1);
-        if (display.textContent === '') {
-          display.textContent = 0;
-          typingDigits = false;
-          resetComma();
-        }
-      } else {
-        display.textContent = '0';        
+
+    } else if (e.target.id === '+-') {
+      display.textContent = -(+display.textContent);
+      if (!typingDigits) {
+        operands[0] = -operands[0];
       }
+
     } else if (e.target.classList.contains('numbers')) {      
       if (typingDigits) {
         display.textContent = display.textContent + e.target.id;        
@@ -41,8 +40,8 @@ buttons.forEach((button) => {
         display.textContent = e.target.id;
       }
       typingDigits = true;
-    } else { 
-            
+    
+    } else {             
       resetComma();   
       
       if (e.target.classList.contains('operations')) {
@@ -52,49 +51,11 @@ buttons.forEach((button) => {
           resultPressed = 'false';
         }
 
-        if (typingDigits) {
-          if (operands.length === 2) {
-            // operands[0] = operands[1];
-            operands.pop();
-          }
-          operands.push(+display.textContent);
-        }
+        addNewOperand()
 
-        if (operator !== '') {          
-          let x, y;
-          if (operands.length === 2) {            
-            x = operands[0];
-            y = operands[1];
-          } else {
-            x = operands[0];
-            y = x;
-            operands.push(y);
-          }
-
-          let result;
-          switch (operator) {
-            case ('+'): 
-              result = performOperation(x, y, add);
-              break;
-            
-            case ('-'): 
-              result = performOperation(x, y, subtract);
-              break;
-            
-            case ('*'): 
-              result = performOperation(x, y, multiply);
-              break;
-
-            case ('/'): 
-              result = performOperation(x, y, divide);
-              break;
-          }          
-
-          console.log(operands[0] + ' ' + operator + ' ' + operands[1] + ' = ' + result);
-
-          operands[0] = result;
+        if (operator !== '') {                            
           // display.textContent = result;          
-          displayResult(result);
+          saveAndDisplayResult(calculateResult());
         }           
 
         typingDigits = false;
@@ -103,58 +64,62 @@ buttons.forEach((button) => {
       } else if (e.target.id === '=') {
         
         resultPressed = true;
-
-        if (typingDigits) {
-          if (operands.length === 2) {
-            // operands[0] = operands[1];
-            operands.pop();
-          }
-          operands.push(+display.textContent);
-        }
+        addNewOperand()
 
         if (operator !== '') {          
-          let x, y;
-          if (operands.length === 2) {            
-            x = operands[0];
-            y = operands[1];
-          } else {
-            x = operands[0];
-            y = x;
-            operands.push(y);
-          }
-
-          let result;
-          switch (operator) {
-            case ('+'): 
-              result = performOperation(x, y, add);
-              break;
-            
-            case ('-'): 
-              result = performOperation(x, y, subtract);
-              break;
-            
-            case ('*'): 
-              result = performOperation(x, y, multiply);
-              break;
-
-            case ('/'): 
-              result = performOperation(x, y, divide);
-              break;
-          } 
-
-          console.log(operands[0] + ' ' + operator + ' ' + operands[1] + ' = ' + result);
-
-          operands[0] = result;
-          displayResult(result);
-          // display.textContent = result;  
+          saveAndDisplayResult(calculateResult());          
         }
+
         typingDigits = false;
       }      
     }        
   });
 });
 
-function displayResult(result) {
+function calculateResult() {
+  let x, y;
+  if (operands.length === 2) {            
+    x = operands[0];
+    y = operands[1];
+  } else {
+    x = operands[0];
+    y = x;
+    operands.push(y);
+  }
+
+  let result;
+  switch (operator) {
+    case ('+'): 
+      result = performOperation(x, y, add);
+      break;
+    
+    case ('-'): 
+      result = performOperation(x, y, subtract);
+      break;
+    
+    case ('*'): 
+      result = performOperation(x, y, multiply);
+      break;
+
+    case ('/'): 
+      result = performOperation(x, y, divide);
+      break;
+  }
+
+  return result;          
+}
+
+function addNewOperand() {
+  if (typingDigits) {
+    if (operands.length === 2) {
+      operands.pop();
+    }
+    operands.push(+display.textContent);
+  }
+}
+
+function saveAndDisplayResult(result) {
+  operands[0] = result;
   display.textContent = result.toString().slice(0, 17);
 }
 
